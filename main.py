@@ -1,6 +1,7 @@
 from googletrans import Translator
 from httpcore import SyncHTTPProxy
 import pyperclip
+import keyboard
 
 
 def convert(un_convert_str):
@@ -14,6 +15,22 @@ def convert(un_convert_str):
     return ret
 
 
+last_clip = ""
+
+
+def out_put():
+    global last_clip
+    for i in range(10):
+        data = pyperclip.paste()  # sudo apt-get install xclip
+        if data != last_clip:
+            last_clip = data
+            input_str = convert(last_clip)
+            print(input_str)
+            t = translator.translate(input_str, dest='zh-cn')
+            print(t.text)
+            print('------------------------------------------------')
+
+
 if __name__ == '__main__':
     ip = input('输入代理服务器ip地址:')
     ip = bytes(ip, encoding="utf8")
@@ -23,13 +40,5 @@ if __name__ == '__main__':
         'translate.google.com',
         'translate.google.cn'
     ], proxies={"https": SyncHTTPProxy((b'http', ip, port, b''))})
-    last_clip = ""
-    while True:
-        data = pyperclip.paste()  # sudo apt-get install xclip
-        if data != last_clip:
-            last_clip = data
-            input_str = convert(last_clip)
-            print(input_str)
-            t = translator.translate(input_str, dest='zh-cn')
-            print(t.text)
-            print('------------------------------------------------')
+    keyboard.add_hotkey('ctrl+c', out_put)
+    keyboard.wait()
