@@ -1,3 +1,5 @@
+import re
+
 from googletrans import Translator
 from httpcore import SyncHTTPProxy
 import pyperclip
@@ -8,11 +10,17 @@ def convert(un_convert_str):
     lines = un_convert_str.splitlines()
     ret_list = []
     for line in lines:
-        ret_list.append(line.strip().strip('//'))
+        line = line.strip()
+        line = re.sub(r'//', '', line)
+        line = re.sub(r'/\*', '', line)
+        line = re.sub(r'\*/', '', line)
+        line = re.sub('[*#$]', '', line)
+        line = line.strip()
+        ret_list.append(line)
     ret = ""
     for p in ret_list:
         ret = ret + " " + p
-    return ret
+    return ret + "\n"
 
 
 last_clip = ""
