@@ -24,19 +24,26 @@ def convert(un_convert_str):
 
 
 last_clip = ""
+ans = ""
 
 
 def out_put():
     global last_clip
+    global ans
     for i in range(10):
         data = pyperclip.paste()  # sudo apt-get install xclip
-        if data != last_clip:
+        if data != last_clip and data != ans:
             last_clip = data
             input_str = convert(last_clip)
             print(input_str)
             t = translator.translate(input_str, dest='zh-cn')
             print(t.text)
+            ans = t.text
             print('------------------------------------------------')
+
+
+def get_str():
+    pyperclip.copy(ans)
 
 
 if __name__ == '__main__':
@@ -49,4 +56,5 @@ if __name__ == '__main__':
         'translate.google.cn'
     ], proxies={"https": SyncHTTPProxy((b'http', ip, port, b''))})
     keyboard.add_hotkey('ctrl+c', out_put)
+    keyboard.add_hotkey('alt+s', get_str)
     keyboard.wait()
